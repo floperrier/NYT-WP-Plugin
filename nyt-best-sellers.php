@@ -10,21 +10,10 @@ function nyt_activate()
 {
     global $wpdb;
 
-<<<<<<< HEAD
     $charset_collate = $wpdb->get_charset_collate();
 
     $tableName = $wpdb->prefix . 'books';
 
-=======
-function nyt_activate()
-{
-    global $wpdb;
- 
-    $charset_collate = $wpdb->get_charset_collate();
- 
-    $tableName = $wpdb->prefix . 'books';
- 
->>>>>>> c8a91fa0f26f904edccc68fc00512ee6384501cf
     $sql = "CREATE TABLE $tableName (
         id bigint(20) unsigned NOT NULL auto_increment,
         title varchar(255) NOT NULL,
@@ -36,19 +25,23 @@ function nyt_activate()
         primary_isbn10 int(20) NOT NULL,
         PRIMARY KEY  (id)
     ) $charset_collate;";
-<<<<<<< HEAD
 
-=======
- 
->>>>>>> c8a91fa0f26f904edccc68fc00512ee6384501cf
+    $tableName1 =  $wpdb->prefix . 'books_categories';
+
+    $sql = "CREATE TABLE $tableName1  (
+        id bigint(20) unsigned NOT NULL auto_increment,
+        name varchar(255) NOT NULL,
+        PRIMARY KEY  (id)
+    ) $charset_collate;";
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
 }
 register_activation_hook(__FILE__, 'nyt_activate');
-<<<<<<< HEAD
 
 function nyt_options_page_html()
 {
+    global $wpdb;
+
 ?>
     <div class="wrap">
         <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
@@ -59,12 +52,23 @@ function nyt_options_page_html()
             // output setting sections and their fields
             // (sections are registered for "wporg", each field is registered to a specific section)
             do_settings_sections('nyt');
+            $response = wp_remote_get("https://api.nytimes.com/svc/books/v3/lists/names.json?api-key=5NFkwspUBXa5GUpZxoh2aR5b4ATitquB");
+            if (is_array($response) && !is_wp_error($response)) {
+                $headers = $response['headers']; // array of http header lines
+                $body    = $response['body']; // use the content
+                $results = json_decode($body)->results;
+
+                foreach ($results as $result) {
+                    var_dump($result->list_name);
+                    $wpdb->query("INSERT INTO wp_books_categories(name) VALUES('$result->list_name');");
+                }
+            }
             // output save settings button
             submit_button(__('Save Settings', 'textdomain'));
             ?>
         </form>
     </div>
-<?php
+    <?php
 }
 
 add_action('admin_menu', 'nyt_options_page');
@@ -81,20 +85,17 @@ function nyt_options_page()
         'dashicons-book-alt',
         20
     );
-    add_submenu_page('nyt','Settings',"Settings","manage_options","nyt-settings","nyt_options_page_html",20);
+    add_submenu_page('nyt', 'Settings', "Settings", "manage_options", "nyt-settings", "nyt_options_page_html", 20);
 }
 
 function nyt_register_settings()
 {
-    register_setting('nyt','nyt_apikey');
-    add_settings_section('nyt_options_section','Paramètres',function() {
+    register_setting('nyt', 'nyt_apikey');
+    add_settings_section('nyt_options_section', 'Paramètres', function () {
     }, 'nyt');
-    add_settings_field('nyt_options_apikey','Clé API New York Times',function() {
-        ?>
+    add_settings_field('nyt_options_apikey', 'Clé API New York Times', function () {
+    ?>
         <input type="text" name="nyt_apikey" value="<?= get_option('nyt_apikey') ?>">
-        <?php
-    },'nyt', 'nyt_options_section');
+<?php
+    }, 'nyt', 'nyt_options_section');
 }
-=======
- 
->>>>>>> c8a91fa0f26f904edccc68fc00512ee6384501cf
