@@ -10,10 +10,21 @@ function nyt_activate()
 {
     global $wpdb;
 
+<<<<<<< HEAD
     $charset_collate = $wpdb->get_charset_collate();
 
     $tableName = $wpdb->prefix . 'books';
 
+=======
+function nyt_activate()
+{
+    global $wpdb;
+ 
+    $charset_collate = $wpdb->get_charset_collate();
+ 
+    $tableName = $wpdb->prefix . 'books';
+ 
+>>>>>>> c8a91fa0f26f904edccc68fc00512ee6384501cf
     $sql = "CREATE TABLE $tableName (
         id bigint(20) unsigned NOT NULL auto_increment,
         title varchar(255) NOT NULL,
@@ -25,11 +36,16 @@ function nyt_activate()
         primary_isbn10 int(20) NOT NULL,
         PRIMARY KEY  (id)
     ) $charset_collate;";
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> c8a91fa0f26f904edccc68fc00512ee6384501cf
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
 }
 register_activation_hook(__FILE__, 'nyt_activate');
+<<<<<<< HEAD
 
 function nyt_options_page_html()
 {
@@ -79,3 +95,6 @@ function nyt_register_settings()
         <?php
     },'nyt', 'nyt_options_section');
 }
+=======
+ 
+>>>>>>> c8a91fa0f26f904edccc68fc00512ee6384501cf
