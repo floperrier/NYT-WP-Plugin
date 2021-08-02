@@ -38,6 +38,15 @@ function nyt_activate()
 }
 register_activation_hook(__FILE__, 'nyt_activate');
 
+function nyt_uninstall()
+{
+    global $wpdb;
+    $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}books_categories;");
+
+}
+
+register_uninstall_hook(__FILE__,'nyt_uninstall'); 
+
 function nyt_options_page_html()
 {
     global $wpdb;
